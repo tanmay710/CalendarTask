@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { AfterContentInit, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CalendarOptions, EventClickArg } from '@fullcalendar/core';
 import { MatDialog } from '@angular/material/dialog';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -7,13 +7,26 @@ import interactionPlugin from '@fullcalendar/interaction';
 import rrulePlugin from '@fullcalendar/rrule'
 import { DialogComponent } from './dialog/dialog.component';
 import { FullCalendarComponent } from '@fullcalendar/angular';
-import { elementAt } from 'rxjs';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
+
+  addevent : FormGroup
+
+   constructor(private dialog : MatDialog, private fb : FormBuilder){
+    this.addevent = this.fb.group({
+      name  : ['',Validators.required],
+      interval : ['',Validators.required],
+      frequency : ['',Validators.required],
+      startDate : ['',Validators.required],
+      endDate : ['',Validators.required]
+    })
+   }
+
 
   color = '#F5E7E4'
 
@@ -28,6 +41,10 @@ export class AppComponent implements OnInit{
   eventId : number = 1
 
 
+  frequenc : Frequency[] = [
+    {value : 'daily', viewValue : 'daily'},
+    {value : 'weekly', viewValue : 'weekly'}
+  ]
 
   inputMedicineEvent : MedicineEvents={
     id : this.eventId.toString(),
@@ -50,7 +67,7 @@ export class AppComponent implements OnInit{
   /**
    Initializing the dialog box
   */
-  constructor(private dialog : MatDialog){}
+ 
 
   /**
   * Loading the previously added events 
@@ -140,10 +157,16 @@ export class AppComponent implements OnInit{
     this.inputMedicineEvent.rrule.freq = this.frequency1
     this.inputMedicineEvent.rrule.interval = this.interval1
 
-    const currEvents = this.calendarOptions.events as MedicineEvents[]
-    currEvents.push(this.inputMedicineEvent)
-    this.calendarOptions.events = [...currEvents]
-    localStorage.setItem('event',JSON.stringify(currEvents))
+    
+    if(this.inputMedicineEvent.rrule.dtstart !== '' || this.inputMedicineEvent.rrule.until || this.inputMedicineEvent.rrule.freq || this.inputMedicineEvent.rrule.interval){
+      const currEvents = this.calendarOptions.events as MedicineEvents[]
+      currEvents.push(this.inputMedicineEvent)
+      this.calendarOptions.events = [...currEvents]
+      localStorage.setItem('event',JSON.stringify(currEvents))
+    }
+    else{
+      alert("Missing data")
+    }
     
     this.inputMedicineEvent={
      id : (this.eventId +1).toString(),
@@ -163,6 +186,14 @@ export class AppComponent implements OnInit{
 
   
     
+  }
+
+  /**
+   * 
+   * @param freq parameter which we receive from view, give this value to @frequency1 which will be added in event 
+   */
+  onFrequncySelect(freq : string){
+    this.frequency1 = freq
   }
 
   /**
@@ -223,4 +254,8 @@ export interface ShowEvents{
   until : string
 }
 
+interface Frequency{
+  value : string,
+  viewValue : string
+}
 

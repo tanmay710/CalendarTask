@@ -17,6 +17,7 @@ import {MatDialogModule} from '@angular/material/dialog'
 import { DialogComponent } from './dialog/dialog.component';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatTableModule} from '@angular/material/table';
+import {MatSelectModule} from '@angular/material/select';
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,7 +39,8 @@ import {MatTableModule} from '@angular/material/table';
    MatDividerModule,
    MatDialogModule,
    MatRadioModule,
-   MatTableModule
+   MatTableModule,
+   MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -8,12 +8,17 @@
 </div>
 <full-calendar #calendar [options]="calendarOptions" *ngIf="calendarView !== 'listView'"></full-calendar>
 <div class="eventBox" *ngIf="isVisible">
-    <form (ngSubmit)="onSubmit()">
+    <form (ngSubmit)="onSubmit()" [formGroup]="addevent">
         <div>
             <mat-form-field class="example-full-width">
                 <mat-label>Medicine Name</mat-label>
-                <input matInput name="name" [(ngModel)]="inputMedicineEvent.title" value="">
+                <input matInput name="name" [(ngModel)]="inputMedicineEvent.title" value="" formControlName="name">
             </mat-form-field>
+            <div
+                *ngIf="addevent.get('name')?.invalid && (addevent.get('name')?.dirty || addevent.get('name')?.touched)">
+
+                <div *ngIf="addevent.get('name')?.hasError('required')">Please enter subject</div>
+            </div>
         </div>
         <div>
             <mat-form-field class="example-full-width">
@@ -22,34 +27,60 @@
             </mat-form-field>
         </div>
         <div>
-            <mat-form-field class="example-full-width">
-                <mat-label>Frequency</mat-label>
-                <input name="frequency" matInput value="" [(ngModel)]="frequency1">
-            </mat-form-field>
-        </div>
+        <mat-form-field>
+            <mat-label>Frequency</mat-label>
+            <mat-select (selectionChange)="onFrequncySelect($event.value)" formControlName="frequency">
+                <mat-option *ngFor="let freq of frequenc" [value]='freq.value'>
+                    {{freq.viewValue}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div
+                *ngIf="addevent.get('frequency')?.invalid && (addevent.get('frequncy')?.dirty || addevent.get('frequency')?.touched)">
+
+                <div *ngIf="addevent.get('frequency')?.hasError('required')">Please enter subject</div>
+            </div>
+    </div>
+
         <div>
             <mat-form-field class="example-full-width">
                 <mat-label>Interval</mat-label>
-                <input type="number" name="interval" matInput value="" [(ngModel)]="interval1">
+                <input type="number" name="interval" matInput value="" [(ngModel)]="interval1"
+                    formControlName="interval">
             </mat-form-field>
+            <div
+                *ngIf="addevent.get('interval')?.invalid && (addevent.get('interval')?.dirty || addevent.get('interval')?.touched)">
+
+                <div *ngIf="addevent.get('interval')?.hasError('required')">Please enter subject</div>
+            </div>
         </div>
-        <div>
+        <div class="dates">
             <mat-form-field>
                 <mat-label>Choose a start date</mat-label>
-                <input matInput [matDatepicker]="picker" name="start" [(ngModel)]="start1">
+                <input matInput [matDatepicker]="picker" name="start" [(ngModel)]="start1" formControlName="startDate">
 
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
+            <div
+                *ngIf="addevent.get('startDate')?.invalid && (addevent.get('startDate')?.dirty || addevent.get('startDate')?.touched)">
+
+                <div *ngIf="addevent.get('startDate')?.hasError('required')">Please enter subject</div>
+            </div>
         </div>
-        <div>
+        <div class="dates">
             <mat-form-field>
                 <mat-label>Choose a end date</mat-label>
-                <input matInput [matDatepicker]="picker2" name="end" [(ngModel)]="end1">
+                <input matInput [matDatepicker]="picker2" name="end" [(ngModel)]="end1" formControlName="endDate">
 
                 <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
                 <mat-datepicker #picker2></mat-datepicker>
             </mat-form-field>
+            <div
+                *ngIf="addevent.get('endDate')?.invalid && (addevent.get('endDate')?.dirty || addevent.get('endDate')?.touched)">
+
+                <div *ngIf="addevent.get('endDate')?.hasError('required')">Please enter subject</div>
+            </div>
         </div>
 
         <div>
@@ -61,7 +92,8 @@
 
         <div>
             <button type="submit" mat-raised-button color="primary">Submit</button>
-            <button class="buttonClose" *ngIf="isVisible" type="button" (click)="closeForm()" mat-raised-button color="warn">Close</button>
+            <button class="buttonClose" *ngIf="isVisible" type="button" (click)="closeForm()" mat-raised-button
+                color="warn">Close</button>
 
         </div>
 
@@ -69,7 +101,8 @@
 </div>
 
 <div class="table" *ngIf="calendarView === 'listView'">
-    <table mat-table [dataSource]="AllEvents" class="mat-elevation-z8" [style.background-color]="color" [style.borderRadius.px]="25">
+    <table mat-table [dataSource]="AllEvents" class="mat-elevation-z8" [style.background-color]="color"
+        [style.borderRadius.px]="25">
         <ng-container matColumnDef="ID">
             <th mat-header-cell *matHeaderCellDef> ID </th>
             <td mat-cell *matCellDef="let element"> {{element.id}} </td>
