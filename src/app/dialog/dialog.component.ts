@@ -8,7 +8,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class DialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: Data){
-    console.log(data.event);
+
     
   }
 }
