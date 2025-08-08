@@ -1,7 +1,8 @@
 .eventBox{
     position: absolute;
+
    inset: 0;
-   z-index: 1; 
+  border-radius: 25px;
   display: flex;  
   align-items: center;
   justify-content: center;
@@ -9,9 +10,14 @@
   margin: 15px;
   height: 650px;
   width:  450px;
-  background-color: lightblue;
+  background-color: #FAA18F;
   box-sizing: border-box;
   margin-left: 600px;
+   z-index: 1; 
+}
+
+.buttonClose{
+  margin-left: 5px;
 }
 
 .header{
@@ -23,4 +29,10 @@
 .radio{
   display: flex;
   gap: 10px;
+
 }
+
+.table{
+  margin-top: 20px;
+}
+

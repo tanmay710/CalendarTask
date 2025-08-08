@@ -1,9 +1,21 @@
 .box{
-    height: 200px;
-    width: 250px;
+    height: 400px;
+    width: 350px;
     box-shadow: 10px 10px;
+    overflow: hidden;
+    background-color: #F5CAC2;
 }
 .insideBox{
-    margin-left: 50px;
+    margin-left: 75px;
+    margin-top: 75px;
+}
+
+.text{
+    font-size: 20px;
+    font-weight: 900;
+    padding-top: 5px;
+}
+
+.button{
     margin-top: 50px;
 }

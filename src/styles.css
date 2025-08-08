@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
+html, body { height: 100%; margin: 20px; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .fc .fc-view-harness {
       background-color:#F5E7E4
@@ -13,3 +13,22 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .fc-col-header-cell-cushion{
     color: #FF0000;
 }
+
+.fc-daygrid-event-harness{
+  background-color: #FAA18F;
+  padding: 2px;
+  margin: 2px;
+  border-radius: 25px;
+}
+
+.mdc-label{
+  color: #EB7560;
+}
+
+.mat-mdc-table{
+  background-color: #EB7560;
+}
+.mdc-data-table__table {
+      background-color: #EB7560;
+}
+

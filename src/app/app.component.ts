@@ -6,13 +6,15 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import rrulePlugin from '@fullcalendar/rrule'
 import { DialogComponent } from './dialog/dialog.component';
-  import { FullCalendarComponent } from '@fullcalendar/angular';
+import { FullCalendarComponent } from '@fullcalendar/angular';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
+
+  color = '#F5E7E4'
 
   isVisible : boolean = false
   calendarView : string = 'dayGridMonths'
@@ -23,6 +25,8 @@ export class AppComponent implements OnInit{
   interval1 : number = 0
   notes : string = ''
   eventId : number = 1
+
+
 
   inputMedicineEvent : MedicineEvents={
     id : this.eventId.toString(),
@@ -111,7 +115,7 @@ export class AppComponent implements OnInit{
     localStorage.setItem('event',JSON.stringify(currEvents))
     
     this.inputMedicineEvent={
-     id : (this.eventId+1).toString(),
+     id : (this.eventId).toString(),
      title : '',
       rrule :{
         freq: '',
@@ -120,6 +124,7 @@ export class AppComponent implements OnInit{
         until: ''
       }
     }
+    this.eventId = this.eventId +1 
     this.start1 = ''
     this.end1 = ''
     this.interval1 = 0

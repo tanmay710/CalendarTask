@@ -1,9 +1,9 @@
 <div class="header">
-    <button type="button" (click)="showForm()" mat-button color="primary">Add event</button>
+    <button type="button" (click)="showForm()" mat-raised-button color="accent">Add event</button>
     <mat-radio-group aria-label="Select an option" class="radio" (change)="changeView($event.value)">
-        <mat-radio-button value="dayGridMonth">Month</mat-radio-button>
-        <mat-radio-button value="dayGridWeek">Week</mat-radio-button>
-        <mat-radio-button value="listView" (click)="viewEvents()">List</mat-radio-button>
+        <mat-radio-button class="radioButton" value="dayGridMonth">Month</mat-radio-button>
+        <mat-radio-button class="radioButton" value="dayGridWeek">Week</mat-radio-button>
+        <mat-radio-button class="radioButton" value="listView" (click)="viewEvents()">List</mat-radio-button>
     </mat-radio-group>
 </div>
 <full-calendar #calendar [options]="calendarOptions" *ngIf="calendarView !== 'listView'"></full-calendar>
@@ -61,7 +61,7 @@
 
         <div>
             <button type="submit" mat-raised-button color="primary">Submit</button>
-            <button *ngIf="isVisible" type="button" (click)="closeForm()" mat-button color="warn">Close</button>
+            <button class="buttonClose" *ngIf="isVisible" type="button" (click)="closeForm()" mat-raised-button color="warn">Close</button>
 
         </div>
 
@@ -69,7 +69,7 @@
 </div>
 
 <div class="table" *ngIf="calendarView === 'listView'">
-    <table mat-table [dataSource]="AllEvents" class="mat-elevation-z8">
+    <table mat-table [dataSource]="AllEvents" class="mat-elevation-z8" [style.background-color]="color" [style.borderRadius.px]="25">
         <ng-container matColumnDef="ID">
             <th mat-header-cell *matHeaderCellDef> ID </th>
             <td mat-cell *matCellDef="let element"> {{element.id}} </td>
