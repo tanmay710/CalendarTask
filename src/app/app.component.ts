@@ -7,6 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import rrulePlugin from '@fullcalendar/rrule'
 import { DialogComponent } from './dialog/dialog.component';
 import { FullCalendarComponent } from '@fullcalendar/angular';
+import { elementAt } from 'rxjs';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -46,7 +47,17 @@ export class AppComponent implements OnInit{
 
   @ViewChild('calendar') fullCalendar : FullCalendarComponent
 
+  /**
+   Initializing the dialog box
+  */
   constructor(private dialog : MatDialog){}
+
+  /**
+  * Loading the previously added events 
+  * Get all the events from localstorage and store it in @storedevents
+  *  @JSONparse because we need data in JSON format because localStorage stores in string format and we need json object
+  *  @retrivedEvents existing events is updated using spread operator(we want to pass elements as individual arguments)
+ */
 
   ngOnInit(): void {
     const storedEvents = localStorage.getItem('event')
@@ -87,16 +98,36 @@ export class AppComponent implements OnInit{
      eventAdd : ()=> this.viewEvents()
   };
 
+  /**
+   * Handling the click on a specific event by passing event details and opening the dialog box
+   * @param eventInfo provided from @eventClick passes all the data
+   */
   handleClickEvent(eventInfo : EventClickArg){    
     this.dialog.open(DialogComponent,{data:eventInfo});
   }
 
+  /**
+   * @isVisible value is changed to true on event click from template so that form is displayed
+   */
   showForm(){ 
     this.isVisible = true
   }
+
+  /**
+   * @isVisible is turned to false to close the form, different function is used because separate button is provided inside the form itself
+   */
   closeForm(){
     this.isVisible = false
   }
+
+  /**
+   * Handle the event form submit event
+   * @newDate provides us the exact required start date format we need to pass in Full calendar
+   * @inputMedicineEvent Value passed to the empty object created in the same format as Full calendar events expects 
+   * @currEvents has current events data which will be used to change the current events
+   * @inputMedicineEvent is pushed inot @currEvents and then stored in local storage
+   * New event is then emptied with its id incremented(id in calendar event is a string)
+   */
 
   onSubmit(){ 
     const date = new Date(this.start1)  
@@ -115,7 +146,7 @@ export class AppComponent implements OnInit{
     localStorage.setItem('event',JSON.stringify(currEvents))
     
     this.inputMedicineEvent={
-     id : (this.eventId).toString(),
+     id : (this.eventId +1).toString(),
      title : '',
       rrule :{
         freq: '',
@@ -124,7 +155,7 @@ export class AppComponent implements OnInit{
         until: ''
       }
     }
-    this.eventId = this.eventId +1 
+    
     this.start1 = ''
     this.end1 = ''
     this.interval1 = 0
@@ -134,6 +165,11 @@ export class AppComponent implements OnInit{
     
   }
 
+  /**
+   * Handling the radio button to change the view
+   * @param view is the input coming from change event in radio button
+   */
+
   changeView(view : string){
     this.calendarView = view
     if(this.calendarView !== 'listView'){
@@ -141,6 +177,9 @@ export class AppComponent implements OnInit{
     }
   }
 
+  /**
+   * This is to show and provide all events to display in table inside List View
+   */
   viewEvents(){
     const storedData = localStorage.getItem('event')
     if(storedData){
@@ -160,6 +199,7 @@ export class AppComponent implements OnInit{
   }
 
 }
+
 
 export interface MedicineEvents{
   id : string,

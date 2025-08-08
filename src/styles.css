@@ -7,7 +7,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     }
 
  .fc-daygrid-day-number {
-      color: #FF0000; /* Example: Red color */
+      color: #FF0000; 
     }
 
 .fc-col-header-cell-cushion{
