@@ -7,8 +7,30 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./dialog.component.css']
 })
 export class DialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any){
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Data){
     console.log(data.event);
     
+  }
+}
+
+export interface Data{
+  event :{
+    title,
+    _def :{
+      recurringDef:{
+        typeData :{
+          rruleSet :{
+            _rrule : {
+              options :{
+                dtstart : string,
+                freq : number,
+                interval : number,
+                until :string
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
