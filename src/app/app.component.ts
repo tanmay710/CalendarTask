@@ -7,7 +7,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 import rrulePlugin from '@fullcalendar/rrule'
 import { DialogComponent } from './dialog/dialog.component';
 import { FullCalendarComponent } from '@fullcalendar/angular';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators} from '@angular/forms';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

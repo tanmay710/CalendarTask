@@ -32,3 +32,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
       background-color: #EB7560;
 }
 
+.fc-prev-button.fc-button.fc-button-primary{
+  background-color: #EB7560;
+  margin-top: 10px;
+}
+.fc-next-button.fc-button.fc-button-primary{
+  background-color: #EB7560;
+  margin-top: 10px;
+}
+
+.fc-toolbar-title{
+  color: #F2745A;
+}
+
+
