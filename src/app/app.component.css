@@ -1,0 +1,26 @@
+.eventBox{
+    position: absolute;
+   inset: 0;
+   z-index: 1; 
+  display: flex;  
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #333; 
+  margin: 15px;
+  height: 650px;
+  width:  450px;
+  background-color: lightblue;
+  box-sizing: border-box;
+  margin-left: 600px;
+}
+
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.radio{
+  display: flex;
+  gap: 10px;
+}

@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.fc .fc-view-harness {
+      background-color:#F5E7E4
+    }
+
+ .fc-daygrid-day-number {
+      color: #FF0000; /* Example: Red color */
+    }
+
+.fc-col-header-cell-cushion{
+    color: #FF0000;
+}

@@ -1,0 +1,9 @@
+.box{
+    height: 200px;
+    width: 250px;
+    box-shadow: 10px 10px;
+}
+.insideBox{
+    margin-left: 50px;
+    margin-top: 50px;
+}

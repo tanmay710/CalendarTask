@@ -1,0 +1,21 @@
+<div class="box">
+    <div class="insideBox">
+    <h5>
+        Medicine Name : {{data.event.title}}   
+    </h5>
+    <h5>
+        Frequency : {{data.event._def.recurringDef.typeData.rruleSet._rrule[0].options.freq}}    
+    </h5>
+    <h5>
+        Interval: {{data.event._def.recurringDef.typeData.rruleSet._rrule[0].options.interval}}
+        
+    </h5>
+     <h5>
+        Starting : {{data.event._def.recurringDef.typeData.rruleSet._rrule[0].options.dtstart | date:'shortDate'}} 
+    </h5>
+    <h5>
+       Until : {{data.event._def.recurringDef.typeData.rruleSet._rrule[0].options.until | date:'shortDate' }}
+    </h5>
+    <button mat-button [mat-dialog-close]="'Closed by button'">Close</button>
+</div>
+</div>
