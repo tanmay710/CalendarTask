@@ -35,4 +35,11 @@ export class EventsService {
   postEvents(data : postMedicineEvents){
     return this.http.post(`${this.URL}`,data)
   }
+
+  deleteEvent(id : string){
+    const id2 = +id
+    console.log(typeof(id2));
+    
+    return this.http.delete(`${this.URL}/${id2}`)
+  }
 }

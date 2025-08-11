@@ -17,5 +17,7 @@
        Until : {{data.event._def.recurringDef.typeData.rruleSet._rrule[0].options.until | date:'shortDate' }}
     </h5>
     <button class="button" mat-raised-button color="warn" [mat-dialog-close]="'Closed by button'">Close</button>
+    <button class="button" mat-raised-button color="warn" (click)="deleteEvent()">Delete event</button>
+
 </div>
 </div>

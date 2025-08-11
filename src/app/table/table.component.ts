@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ShowEvents } from '../app.component';
+import { MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -11,6 +12,6 @@ export class TableComponent {
 
   calendarView : string = ''
   displayedColumns : string[] = ['ID', 'Medicine name','Frequency','Interval','Start','Until']
-
+  
   color = '#F5E7E4'
 }

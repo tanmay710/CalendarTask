@@ -25,7 +25,9 @@ export class AppComponent implements OnInit{
       interval : ['',Validators.required],
       frequency : ['',Validators.required],
       startDate : ['',Validators.required],
-      endDate : ['',Validators.required]
+      endDate : ['',Validators.required],
+      dosage : [''],
+      notes : ['']
     })
    }
 
@@ -41,7 +43,7 @@ export class AppComponent implements OnInit{
   frequency1 : string = ''
   interval1 : number = 0
   notes : string = ''
-  eventId : number = 0
+  eventId : number = 1
 
 
   frequenc : Frequency[] = [
@@ -50,18 +52,20 @@ export class AppComponent implements OnInit{
   ]
 
   inputMedicineEvent : postMedicineEvents={
+    id : '',
     title: '',
+    dosage : '',
     rrule :{
       freq: '',
       interval: 0,
       dtstart: '',
       until: ''
-    }
-  
+    },
+    notes : ''
   }
 
   AllEvents : ShowEvents[]=[]
-  // displayedColumns : string[] = ['ID', 'Medicine name','Frequency','Interval','Start','Until']
+  
 
 
   @ViewChild('calendar') fullCalendar : FullCalendarComponent
@@ -73,18 +77,17 @@ export class AppComponent implements OnInit{
 
   /**
   * Loading the previously added events 
-  * Get all the events from localstorage and store it in @storedevents
-  *  @retrivedEvents existing events is updated using spread operator(we want to pass elements as individual arguments)
  */
 
   ngOnInit(): void {
     this.service.getAllEvents().subscribe((data)=>{
-      const storedEvents = data
-      if(storedEvents){
-        this.calendarOptions.events = [...storedEvents]
+     
+      if(data){
+        this.calendarOptions.events = [...data]
       }
     })
     this.viewEvents()
+
   }
 
   calendarOptions: CalendarOptions = {
@@ -115,15 +118,41 @@ export class AppComponent implements OnInit{
     },
   
      eventClick : this.handleClickEvent.bind(this),
-     eventAdd : ()=> this.viewEvents()
+     eventAdd : ()=> this.viewEvents(),
+     eventRemove : () => this.handleRemovedEvent()
   };
 
   /**
    * Handling the click on a specific event by passing event details and opening the dialog box
    * @param eventInfo provided from @eventClick passes all the data
    */
-  handleClickEvent(eventInfo : EventClickArg){    
-    this.dialog.open(DialogComponent,{data:eventInfo});
+  handleClickEvent(eventInfo : EventClickArg){ 
+    
+        
+    const dialogRef = this.dialog.open(DialogComponent,{data:eventInfo});
+     dialogRef.componentInstance.eventDeleted.subscribe((data)=>{
+      const storedEvents = this.calendarOptions.events as MedicineEvents[]
+      const newEventsArray = storedEvents.filter((p)=> p.id !== eventInfo.event._def.publicId)
+      this.calendarOptions.events = [...newEventsArray]
+    })
+  }
+
+  handleRemovedEvent(){
+     this.service.getAllEvents().subscribe((data)=>{
+      const storedData = data
+
+      if(storedData){
+    
+      this.AllEvents = storedData.map((items)=>({
+        id : items.id,
+        title : items.title,
+        frequency : items.rrule.freq,
+        interval : items.rrule.interval,
+        start : items.rrule.dtstart,
+        until : items.rrule.until
+      }))
+    }
+    })  
   }
 
   /**
@@ -149,7 +178,14 @@ export class AppComponent implements OnInit{
 
   onSubmit(){ 
     if(this.addevent.valid){
-    this.eventId = this.eventId+1
+
+    let elements = this.calendarOptions.events as MedicineEvents[]
+    let lastElement = elements[elements.length -1]
+    if(lastElement){
+      let fetchid = lastElement.id
+      this.eventId =  +fetchid +1
+    }
+  
     this.start1 = this.addevent.get('startDate').value
     const date = new Date(this.start1)  
     date.setDate(date.getDate()+1)
@@ -157,12 +193,14 @@ export class AppComponent implements OnInit{
     let newDate = date.toISOString().slice(0,19)
     this.end1 = this.addevent.get('endDate').value    
     const date2 = new Date(this.end1)
-    this.inputMedicineEvent.title = this.addevent.get('name').value   
+    this.inputMedicineEvent.title = this.addevent.get('name').value 
+    this.inputMedicineEvent.dosage = this.addevent.get('dosage').value
+    this.inputMedicineEvent.notes = this.addevent.get('notes').value  
     this.inputMedicineEvent.rrule.dtstart = newDate
     this.inputMedicineEvent.rrule.until = formatDate(date2,'yyyy-MM-dd','en-US') 
     this.inputMedicineEvent.rrule.freq = this.frequency1
     this.inputMedicineEvent.rrule.interval = this.addevent.get('interval').value
-
+    this.inputMedicineEvent.id = this.eventId.toString()
       
       this.service.postEvents(this.inputMedicineEvent).subscribe({
         next : (newEvent) => {alert("successfully added to json"),
@@ -172,13 +210,16 @@ export class AppComponent implements OnInit{
       )
 
     this.inputMedicineEvent={
+     id : '',
      title : '',
+     dosage : '',
       rrule :{
         freq: '',
         interval: 0,
         dtstart: '',
         until: ''
-      }
+      },
+      notes : ''
     } 
     this.start1 = ''
     this.end1 = ''
@@ -189,7 +230,7 @@ export class AppComponent implements OnInit{
   }
 
   /**
-   * 
+   * Giving value to frequency
    * @param freq parameter which we receive from view, give this value to @frequency1 which will be added in event 
    */
   onFrequencySelect(freq : string){
@@ -229,37 +270,36 @@ export class AppComponent implements OnInit{
         until : items.rrule.until
       }))
     }
-    })
-    
-    
-  
-    
+    })  
   }
-
 }
 
 
 export interface MedicineEvents{
   id : string,
   title : string,
+   dosage : string,
   rrule :{
     freq : string,
     interval : number,
     dtstart : string,
     until : string
-  }
+  },
+  notes : string
 }
 
 
 export interface postMedicineEvents{
- 
+  id : string,
   title : string,
+  dosage : string,
   rrule :{
     freq : string,
     interval : number,
     dtstart : string,
     until : string
-  }
+  },
+  notes : string
 }
 
 export interface ShowEvents{
