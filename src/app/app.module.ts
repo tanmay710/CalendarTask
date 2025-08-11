@@ -19,10 +19,14 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatTableModule} from '@angular/material/table';
 import {MatSelectModule} from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
+
+import {MatSortModule} from '@angular/material/sort';
+import { TableComponent } from './table/table.component';
 @NgModule({
   declarations: [
     AppComponent,
-    DialogComponent
+    DialogComponent,
+    TableComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +46,8 @@ import { HttpClientModule } from '@angular/common/http';
    MatRadioModule,
    MatTableModule,
    MatSelectModule,
-   HttpClientModule
+   HttpClientModule,
+   MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]

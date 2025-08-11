@@ -45,4 +45,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   color: #F2745A;
 }
 
+::ng-deep .fc-toolbar-chunk{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 

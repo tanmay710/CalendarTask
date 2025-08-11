@@ -9,6 +9,7 @@ import { DialogComponent } from './dialog/dialog.component';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { FormGroup, FormBuilder, Validators} from '@angular/forms';
 import { EventsService } from './events.service';
+import { TableComponent } from './table/table.component';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -30,7 +31,7 @@ export class AppComponent implements OnInit{
 
 
 
-  color = '#F5E7E4'
+  // color = '#F5E7E4'
 
   isVisible : boolean = false
   calendarView : string = 'dayGridMonths'
@@ -60,11 +61,11 @@ export class AppComponent implements OnInit{
   }
 
   AllEvents : ShowEvents[]=[]
-  displayedColumns : string[] = ['ID', 'Medicine name','Frequency','Interval','Start','Until']
+  // displayedColumns : string[] = ['ID', 'Medicine name','Frequency','Interval','Start','Until']
 
 
   @ViewChild('calendar') fullCalendar : FullCalendarComponent
-
+  @ViewChild(TableComponent) table : TableComponent
   /**
    Initializing the dialog box
   */
@@ -83,15 +84,15 @@ export class AppComponent implements OnInit{
         this.calendarOptions.events = [...storedEvents]
       }
     })
-    
+    this.viewEvents()
   }
 
   calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
     plugins: [dayGridPlugin, interactionPlugin,rrulePlugin],
     headerToolbar: {
-      left: 'prev,next',
-      center: 'title',
+      left: '',
+      center: 'prev,title,next',
       right: ''
     },
     events: [],
@@ -205,6 +206,10 @@ export class AppComponent implements OnInit{
     if(this.calendarView !== 'listView'){
       this.fullCalendar.getApi().changeView(view)
     }
+    else{
+      this.table.calendarView = view
+    }
+    
   }
 
   /**
