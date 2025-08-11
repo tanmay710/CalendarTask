@@ -8,7 +8,7 @@ import rrulePlugin from '@fullcalendar/rrule'
 import { DialogComponent } from './dialog/dialog.component';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { FormGroup, FormBuilder, Validators} from '@angular/forms';
-
+import { EventsService } from './events.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,7 +18,7 @@ export class AppComponent implements OnInit{
 
   addevent : FormGroup
 
-   constructor(private dialog : MatDialog, private fb : FormBuilder){
+   constructor(private dialog : MatDialog, private fb : FormBuilder, private service : EventsService){
     this.addevent = this.fb.group({
       name  : ['',Validators.required],
       interval : ['',Validators.required],
@@ -27,6 +27,7 @@ export class AppComponent implements OnInit{
       endDate : ['',Validators.required]
     })
    }
+
 
 
   color = '#F5E7E4'
@@ -39,7 +40,7 @@ export class AppComponent implements OnInit{
   frequency1 : string = ''
   interval1 : number = 0
   notes : string = ''
-  eventId : number = 1
+  eventId : number = 0
 
 
   frequenc : Frequency[] = [
@@ -47,8 +48,8 @@ export class AppComponent implements OnInit{
     {value : 'weekly', viewValue : 'weekly'}
   ]
 
-  inputMedicineEvent : MedicineEvents={
-    id : this.eventId.toString(),
+  inputMedicineEvent : postMedicineEvents={
+    // id : this.eventId.toString(),
     title: '',
     rrule :{
       freq: '',
@@ -78,11 +79,18 @@ export class AppComponent implements OnInit{
  */
 
   ngOnInit(): void {
-    const storedEvents = localStorage.getItem('event')
-    if(storedEvents){
-      const retrievedEvents :  MedicineEvents[] = JSON.parse(storedEvents)
-      this.calendarOptions.events = [...retrievedEvents]
-    }
+    // const storedEvents = localStorage.getItem('event')
+    // if(storedEvents){
+    //   const retrievedEvents :  MedicineEvents[] = JSON.parse(storedEvents)
+    //   this.calendarOptions.events = [...retrievedEvents]
+    // }
+    this.service.getAllEvents().subscribe((data)=>{
+      const storedEvents = data
+      if(storedEvents){
+        this.calendarOptions.events = [...storedEvents]
+      }
+    })
+    
   }
 
   calendarOptions: CalendarOptions = {
@@ -148,29 +156,32 @@ export class AppComponent implements OnInit{
    */
 
   onSubmit(){ 
+    if(this.addevent.valid){
+    this.eventId = this.eventId+1
+    this.start1 = this.addevent.get('startDate').value
     const date = new Date(this.start1)  
     date.setDate(date.getDate()+1)
     
-    let newDate = date.toISOString().slice(0,19)    
-    const date2 = new Date(this.end1)   
+    let newDate = date.toISOString().slice(0,19)
+    this.end1 = this.addevent.get('endDate').value    
+    const date2 = new Date(this.end1)
+    this.inputMedicineEvent.title = this.addevent.get('name').value   
     this.inputMedicineEvent.rrule.dtstart = newDate
     this.inputMedicineEvent.rrule.until = formatDate(date2,'yyyy-MM-dd','en-US') 
     this.inputMedicineEvent.rrule.freq = this.frequency1
-    this.inputMedicineEvent.rrule.interval = this.interval1
+    this.inputMedicineEvent.rrule.interval = this.addevent.get('interval').value
+    // this.inputMedicineEvent.id = this.eventId.toString()
 
-    
-    if(this.inputMedicineEvent.rrule.dtstart !== '' || this.inputMedicineEvent.rrule.until || this.inputMedicineEvent.rrule.freq || this.inputMedicineEvent.rrule.interval){
-      const currEvents = this.calendarOptions.events as MedicineEvents[]
-      currEvents.push(this.inputMedicineEvent)
-      this.calendarOptions.events = [...currEvents]
-      localStorage.setItem('event',JSON.stringify(currEvents))
-    }
-    else{
-      alert("Missing data")
-    }
-    
+      
+      this.service.postEvents(this.inputMedicineEvent).subscribe({
+        next : (newEvent) => {alert("successfully added to json"),
+          this.calendarOptions.events = [...this.calendarOptions.events as MedicineEvents[],newEvent]
+        }
+      }
+      )
+
     this.inputMedicineEvent={
-     id : (this.eventId +1).toString(),
+    //  id : (this.eventId).toString(),
      title : '',
       rrule :{
         freq: '',
@@ -178,22 +189,20 @@ export class AppComponent implements OnInit{
         dtstart: '',
         until: ''
       }
-    }
-    
+    } 
     this.start1 = ''
     this.end1 = ''
     this.interval1 = 0
     this.frequency1 = ''
 
-  
-    
+    }
   }
 
   /**
    * 
    * @param freq parameter which we receive from view, give this value to @frequency1 which will be added in event 
    */
-  onFrequncySelect(freq : string){
+  onFrequencySelect(freq : string){
     this.frequency1 = freq
   }
 
@@ -213,10 +222,11 @@ export class AppComponent implements OnInit{
    * This is to show and provide all events to display in table inside List View
    */
   viewEvents(){
-    const storedData = localStorage.getItem('event')
-    if(storedData){
-      const storedData2 = JSON.parse(storedData)
-      this.AllEvents = storedData2.map((items)=>({
+    this.service.getAllEvents().subscribe((data)=>{
+      const storedData = data
+      if(storedData){
+    
+      this.AllEvents = storedData.map((items)=>({
         id : items.id,
         title : items.title,
         frequency : items.rrule.freq,
@@ -225,6 +235,8 @@ export class AppComponent implements OnInit{
         until : items.rrule.until
       }))
     }
+    })
+    
     
   
     
@@ -242,9 +254,21 @@ export interface MedicineEvents{
     dtstart : string,
     until : string
   }
-  
-
 }
+
+
+export interface postMedicineEvents{
+ 
+  title : string,
+  rrule :{
+    freq : string,
+    interval : number,
+    dtstart : string,
+    until : string
+  }
+}
+
+
 
 export interface ShowEvents{
   id : string,

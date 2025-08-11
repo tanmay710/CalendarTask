@@ -18,6 +18,7 @@ import { DialogComponent } from './dialog/dialog.component';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatTableModule} from '@angular/material/table';
 import {MatSelectModule} from '@angular/material/select';
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +41,8 @@ import {MatSelectModule} from '@angular/material/select';
    MatDialogModule,
    MatRadioModule,
    MatTableModule,
-   MatSelectModule
+   MatSelectModule,
+   HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

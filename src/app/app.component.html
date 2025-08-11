@@ -12,7 +12,7 @@
         <div>
             <mat-form-field class="example-full-width">
                 <mat-label>Medicine Name</mat-label>
-                <input matInput name="name" [(ngModel)]="inputMedicineEvent.title" value="" formControlName="name">
+                <input matInput name="name"  value="" formControlName="name">
             </mat-form-field>
             <div
                 *ngIf="addevent.get('name')?.invalid && (addevent.get('name')?.dirty || addevent.get('name')?.touched)">
@@ -29,7 +29,7 @@
         <div>
         <mat-form-field>
             <mat-label>Frequency</mat-label>
-            <mat-select (selectionChange)="onFrequncySelect($event.value)" formControlName="frequency">
+            <mat-select (selectionChange)="onFrequencySelect($event.value)" formControlName="frequency">
                 <mat-option *ngFor="let freq of frequenc" [value]='freq.value'>
                     {{freq.viewValue}}
                 </mat-option>
@@ -45,7 +45,7 @@
         <div>
             <mat-form-field class="example-full-width">
                 <mat-label>Interval</mat-label>
-                <input type="number" name="interval" matInput value="" [(ngModel)]="interval1"
+                <input type="number" name="interval" matInput value="" 
                     formControlName="interval">
             </mat-form-field>
             <div
@@ -57,7 +57,7 @@
         <div class="dates">
             <mat-form-field>
                 <mat-label>Choose a start date</mat-label>
-                <input matInput [matDatepicker]="picker" name="start" [(ngModel)]="start1" formControlName="startDate">
+                <input matInput [matDatepicker]="picker" name="start" formControlName="startDate">
 
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
@@ -71,7 +71,7 @@
         <div class="dates">
             <mat-form-field>
                 <mat-label>Choose a end date</mat-label>
-                <input matInput [matDatepicker]="picker2" name="end" [(ngModel)]="end1" formControlName="endDate">
+                <input matInput [matDatepicker]="picker2" name="end" formControlName="endDate">
 
                 <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
                 <mat-datepicker #picker2></mat-datepicker>
@@ -86,7 +86,7 @@
         <div>
             <mat-form-field class="example-full-width">
                 <mat-label>Add note</mat-label>
-                <input name="frequency" matInput value="" [(ngModel)]="notes">
+                <input name="frequency" matInput value="" >
             </mat-form-field>
         </div>
 

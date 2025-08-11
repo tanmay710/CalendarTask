@@ -1,0 +1,14 @@
+{
+  "events": [
+    {
+      "id": "ebe9",
+      "title": "Crocin",
+      "rrule": {
+        "freq": "daily",
+        "interval": 1,
+        "dtstart": "2025-08-12T18:30:00",
+        "until": "2025-08-15"
+      }
+    }
+  ]
+}
