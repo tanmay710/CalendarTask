@@ -49,7 +49,6 @@ export class AppComponent implements OnInit{
   ]
 
   inputMedicineEvent : postMedicineEvents={
-    // id : this.eventId.toString(),
     title: '',
     rrule :{
       freq: '',
@@ -74,16 +73,10 @@ export class AppComponent implements OnInit{
   /**
   * Loading the previously added events 
   * Get all the events from localstorage and store it in @storedevents
-  *  @JSONparse because we need data in JSON format because localStorage stores in string format and we need json object
   *  @retrivedEvents existing events is updated using spread operator(we want to pass elements as individual arguments)
  */
 
   ngOnInit(): void {
-    // const storedEvents = localStorage.getItem('event')
-    // if(storedEvents){
-    //   const retrievedEvents :  MedicineEvents[] = JSON.parse(storedEvents)
-    //   this.calendarOptions.events = [...retrievedEvents]
-    // }
     this.service.getAllEvents().subscribe((data)=>{
       const storedEvents = data
       if(storedEvents){
@@ -149,9 +142,7 @@ export class AppComponent implements OnInit{
   /**
    * Handle the event form submit event
    * @newDate provides us the exact required start date format we need to pass in Full calendar
-   * @inputMedicineEvent Value passed to the empty object created in the same format as Full calendar events expects 
-   * @currEvents has current events data which will be used to change the current events
-   * @inputMedicineEvent is pushed inot @currEvents and then stored in local storage
+   * @inputMedicineEvent Values passed to the empty object created in the same format as Full calendar events expects 
    * New event is then emptied with its id incremented(id in calendar event is a string)
    */
 
@@ -170,7 +161,6 @@ export class AppComponent implements OnInit{
     this.inputMedicineEvent.rrule.until = formatDate(date2,'yyyy-MM-dd','en-US') 
     this.inputMedicineEvent.rrule.freq = this.frequency1
     this.inputMedicineEvent.rrule.interval = this.addevent.get('interval').value
-    // this.inputMedicineEvent.id = this.eventId.toString()
 
       
       this.service.postEvents(this.inputMedicineEvent).subscribe({
@@ -181,7 +171,6 @@ export class AppComponent implements OnInit{
       )
 
     this.inputMedicineEvent={
-    //  id : (this.eventId).toString(),
      title : '',
       rrule :{
         freq: '',
@@ -267,8 +256,6 @@ export interface postMedicineEvents{
     until : string
   }
 }
-
-
 
 export interface ShowEvents{
   id : string,
