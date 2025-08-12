@@ -1,20 +1,23 @@
 <div class="box">
     <div class="insideBox">
     <h5 class="text">
-        Medicine Name : {{data.event.title}}   
+        Medicine Name : {{data.title}}   
     </h5>
     <h5 class="text">
-        Frequency : {{data.event._def.recurringDef.typeData.rruleSet._rrule[0].options.freq}}    
+        Frequency : {{data.frequency}}    
     </h5>
     <h5 class="text">
-        Interval: {{data.event._def.recurringDef.typeData.rruleSet._rrule[0].options.interval}}
+        Interval: {{data.interval}}
         
     </h5>
      <h5 class="text">
-        Starting : {{data.event._def.recurringDef.typeData.rruleSet._rrule[0].options.dtstart | date:'shortDate'}} 
+        Date : {{data.start}} 
     </h5>
     <h5 class="text">
-       Until : {{data.event._def.recurringDef.typeData.rruleSet._rrule[0].options.until | date:'shortDate' }}
+       Dosage : {{data.dosage}}
+    </h5>
+    <h5 class="text">
+       Notes : {{data.notes}}
     </h5>
     <button class="button" mat-raised-button color="warn" [mat-dialog-close]="'Closed by button'">Close</button>
     <button class="button" mat-raised-button color="warn" (click)="deleteEvent()">Delete event</button>

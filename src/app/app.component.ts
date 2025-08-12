@@ -7,7 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import rrulePlugin from '@fullcalendar/rrule'
 import { DialogComponent } from './dialog/dialog.component';
 import { FullCalendarComponent } from '@fullcalendar/angular';
-import { FormGroup, FormBuilder, Validators} from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EventsService } from './events.service';
 import { TableComponent } from './table/table.component';
 @Component({
@@ -15,35 +15,31 @@ import { TableComponent } from './table/table.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 
-  addevent : FormGroup
+  addevent: FormGroup
 
-   constructor(private dialog : MatDialog, private fb : FormBuilder, private service : EventsService){
+  constructor(private dialog: MatDialog, private fb: FormBuilder, private service: EventsService) {
     this.addevent = this.fb.group({
-      name  : ['',Validators.required],
-      interval : ['',Validators.required],
-      frequency : ['',Validators.required],
-      startDate : ['',Validators.required],
-      endDate : ['',Validators.required],
-      dosage : [''],
-      notes : ['']
+      name: ['', Validators.required],
+      interval: ['', Validators.required],
+      frequency: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      dosage: ['',Validators.required],
+      notes: ['',Validators.required]
     })
-   }
+  }
 
-
-
-  // color = '#F5E7E4'
-
-  isVisible : boolean = false
-  calendarView : string = 'dayGridMonths'
-  start1 : string = ''
-  end1 : string = ''
-  dosage : string =''
-  frequency1 : string = ''
-  interval1 : number = 0
-  notes : string = ''
-  eventId : number = 1
+  isVisible: boolean = false
+  calendarView: string = 'dayGridMonths'
+  start1: string = ''
+  end1: string = ''
+  dosage: string = ''
+  frequency1: string = ''
+  interval1: number = 0
+  notes: string = ''
+  eventId: number = 1
 
 
   frequenc : Frequency[] = [
@@ -51,121 +47,123 @@ export class AppComponent implements OnInit{
     {value : 'weekly', viewValue : 'weekly'}
   ]
 
-  inputMedicineEvent : postMedicineEvents={
-    id : '',
-    title: '',
-    dosage : '',
-    rrule :{
-      freq: '',
-      interval: 0,
-      dtstart: '',
-      until: ''
-    },
-    notes : ''
-  }
 
   AllEvents : ShowEvents[]=[]
-  
 
 
-  @ViewChild('calendar') fullCalendar : FullCalendarComponent
-  @ViewChild(TableComponent) table : TableComponent
+
+  @ViewChild('calendar') fullCalendar: FullCalendarComponent
+  @ViewChild(TableComponent) table: TableComponent
   /**
    Initializing the dialog box
   */
- 
+
 
   /**
   * Loading the previously added events 
  */
 
   ngOnInit(): void {
-    this.service.getAllEvents().subscribe((data)=>{
-     
-      if(data){
+    this.service.getAllEvents().subscribe((data) => {
+
+      if (data) {
         this.calendarOptions.events = [...data]
       }
     })
-    this.viewEvents()
+    // this.viewEvents()
 
   }
 
   calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
-    plugins: [dayGridPlugin, interactionPlugin,rrulePlugin],
+    plugins: [dayGridPlugin, interactionPlugin, rrulePlugin],
     headerToolbar: {
-      left: '',
-      center: 'prev,title,next',
+      left: 'prev,next',
+      center: 'title',
       right: ''
     },
     events: [],
-    eventContent : function(args){
-      let eventHtml =''
-      let date = new Date(args.event._def.recurringDef.typeData.rruleSet._rrule[0].options.dtstart)
-      let date2 = formatDate(date,'yyyy-MM-dd','en-US')
-      let date3 = new Date(args.event._def.recurringDef.typeData.rruleSet._rrule[0].options.until )
-      let date4 = formatDate(date3,'yyyy-MM-dd','en-US')
-      if(args.view.type === 'dayGridMonth'){
+    eventContent: function (args) {
+    
+      
+      let eventHtml = ''
+      let date = new Date(args.event.start)
+      let date2 = formatDate(date, 'yyyy-MM-dd', 'en-US')
+
+      if (args.view.type === 'dayGridMonth') {
         eventHtml = `<div>Medicine Name : ${args.event.title}</div>`
       }
-      else{
+      else {
         eventHtml = `<div>Medicine Name ${args.event.title}<br> 
-        Frequency : ${args.event._def.recurringDef.typeData.rruleSet._rrule[0].options.freq}<br>
-        Start date: ${date2}<br>
-        End date: ${date4} </div>`  
+        Frequency : ${args.event.extendedProps['frequency']}<br>
+        Date: ${date2}<br>
+        Dosage: ${args.event.extendedProps['dosage']} </div>`
       }
-       return { html: eventHtml };
+      return { html: eventHtml };
     },
-  
-     eventClick : this.handleClickEvent.bind(this),
+
+    eventClick: this.handleClickEvent.bind(this),
      eventAdd : ()=> this.viewEvents(),
-     eventRemove : () => this.handleRemovedEvent()
+    eventRemove: () => this.handleRemovedEvent()
   };
 
   /**
    * Handling the click on a specific event by passing event details and opening the dialog box
    * @param eventInfo provided from @eventClick passes all the data
    */
-  handleClickEvent(eventInfo : EventClickArg){ 
-    
-        
-    const dialogRef = this.dialog.open(DialogComponent,{data:eventInfo});
-     dialogRef.componentInstance.eventDeleted.subscribe((data)=>{
+  handleClickEvent(eventInfo: EventClickArg) {
+
+    console.log(eventInfo);
+
+    const eventI : ShowEvents ={
+      id: eventInfo.event.id,
+      title: eventInfo.event.title,
+      frequency: eventInfo.event._def.extendedProps['frequency'],
+      dosage: eventInfo.event._def.extendedProps['dosage'],
+      interval: eventInfo.event._def.extendedProps['interval'],
+      start: eventInfo.event.start.toISOString().split('T')[0],
+      notes: eventInfo.event._def.extendedProps['notes']
+    }
+
+
+    const dialogRef = this.dialog.open(DialogComponent, { data: eventI });
+    dialogRef.componentInstance.eventDeleted.subscribe((data) => {
       const storedEvents = this.calendarOptions.events as MedicineEvents[]
-      const newEventsArray = storedEvents.filter((p)=> p.id !== eventInfo.event._def.publicId)
+      const newEventsArray = storedEvents.filter((p) => p.id !== eventInfo.event._def.publicId)
       this.calendarOptions.events = [...newEventsArray]
     })
   }
 
-  handleRemovedEvent(){
-     this.service.getAllEvents().subscribe((data)=>{
+  handleRemovedEvent() {
+    this.service.getAllEvents().subscribe((data) => {
       const storedData = data
 
-      if(storedData){
-    
-      this.AllEvents = storedData.map((items)=>({
-        id : items.id,
-        title : items.title,
-        frequency : items.rrule.freq,
-        interval : items.rrule.interval,
-        start : items.rrule.dtstart,
-        until : items.rrule.until
-      }))
-    }
-    })  
+        if(storedData){
+
+        this.AllEvents = storedData.map((items)=>({
+          id : items.id,
+          title : items.title,
+          frequency : items.frequency,
+          interval : items.interval,
+          start : items.start,
+          dosage : items.dosage,
+          notes : items.notes
+        }))
+      }
+    })
   }
 
   /**
    * @isVisible value is changed to true on event click from template so that form is displayed
    */
-  showForm(){ 
+  showForm() {
     this.isVisible = true
   }
 
   /**
    * @isVisible is turned to false to close the form, different function is used because separate button is provided inside the form itself
    */
-  closeForm(){
+  closeForm() {
     this.isVisible = false
   }
 
@@ -176,55 +174,47 @@ export class AppComponent implements OnInit{
    * New event is then emptied with its id incremented(id in calendar event is a string)
    */
 
-  onSubmit(){ 
-    if(this.addevent.valid){
+  onSubmit() {
+    if (this.addevent.valid) {
 
-    let elements = this.calendarOptions.events as MedicineEvents[]
-    let lastElement = elements[elements.length -1]
-    if(lastElement){
-      let fetchid = lastElement.id
-      this.eventId =  +fetchid +1
-    }
-  
-    this.start1 = this.addevent.get('startDate').value
-    const date = new Date(this.start1)  
-    date.setDate(date.getDate()+1)
-    
-    let newDate = date.toISOString().slice(0,19)
-    this.end1 = this.addevent.get('endDate').value    
-    const date2 = new Date(this.end1)
-    this.inputMedicineEvent.title = this.addevent.get('name').value 
-    this.inputMedicineEvent.dosage = this.addevent.get('dosage').value
-    this.inputMedicineEvent.notes = this.addevent.get('notes').value  
-    this.inputMedicineEvent.rrule.dtstart = newDate
-    this.inputMedicineEvent.rrule.until = formatDate(date2,'yyyy-MM-dd','en-US') 
-    this.inputMedicineEvent.rrule.freq = this.frequency1
-    this.inputMedicineEvent.rrule.interval = this.addevent.get('interval').value
-    this.inputMedicineEvent.id = this.eventId.toString()
-      
-      this.service.postEvents(this.inputMedicineEvent).subscribe({
-        next : (newEvent) => {alert("successfully added to json"),
-          this.calendarOptions.events = [...this.calendarOptions.events as MedicineEvents[],newEvent]
+      this.start1 = this.addevent.get('startDate').value
+      const date = new Date(this.start1)
+      const date2 = date.setDate(date.getDate() + 1)
+      this.end1 = this.addevent.get('endDate').value
+      const endDate = new Date(this.end1)
+
+      let currentDate = new Date(date2)
+      while (currentDate <= endDate) {
+        let elements = this.calendarOptions.events as MedicineEvents[]
+        let lastElement = elements[elements.length - 1]
+        if (lastElement) {
+          let fetchid = lastElement.id
+          this.eventId = +fetchid + 1
         }
-      }
-      )
+        const eventObj: postMedicineEvents = {
+          id: this.eventId.toString(),
+          title: this.addevent.get('name').value,
+          dosage: this.addevent.get('dosage').value,
+          start: currentDate.toISOString().split('T')[0],
+          notes: this.addevent.get('notes').value,
+          frequency: this.frequency1,
+          interval : this.addevent.get('interval').value
+        }
 
-    this.inputMedicineEvent={
-     id : '',
-     title : '',
-     dosage : '',
-      rrule :{
-        freq: '',
-        interval: 0,
-        dtstart: '',
-        until: ''
-      },
-      notes : ''
-    } 
-    this.start1 = ''
-    this.end1 = ''
-    this.interval1 = 0
-    this.frequency1 = ''
+        this.service.postEvents(eventObj).subscribe({
+          next: (event) => {
+            
+            this.calendarOptions.events = [...this.calendarOptions.events as MedicineEvents[], event]
+          }
+        })
+        this.eventId++
+        currentDate.setDate(currentDate.getDate() + 1)
+      }
+      this.addevent.reset()
+      this.start1 = ''
+      this.end1 = ''
+      this.interval1 = 0
+      this.frequency1 = ''
 
     }
   }
@@ -233,7 +223,7 @@ export class AppComponent implements OnInit{
    * Giving value to frequency
    * @param freq parameter which we receive from view, give this value to @frequency1 which will be added in event 
    */
-  onFrequencySelect(freq : string){
+  onFrequencySelect(freq: string) {
     this.frequency1 = freq
   }
 
@@ -242,15 +232,15 @@ export class AppComponent implements OnInit{
    * @param view is the input coming from change event in radio button
    */
 
-  changeView(view : string){
+  changeView(view: string) {
     this.calendarView = view
-    if(this.calendarView !== 'listView'){
+    if (this.calendarView !== 'listView') {
       this.fullCalendar.getApi().changeView(view)
     }
-    else{
+    else {
       this.table.calendarView = view
     }
-    
+
   }
 
   /**
@@ -260,14 +250,15 @@ export class AppComponent implements OnInit{
     this.service.getAllEvents().subscribe((data)=>{
       const storedData = data
       if(storedData){
-    
+
       this.AllEvents = storedData.map((items)=>({
         id : items.id,
         title : items.title,
-        frequency : items.rrule.freq,
-        interval : items.rrule.interval,
-        start : items.rrule.dtstart,
-        until : items.rrule.until
+        dosage : items.dosage,
+        start : items.start,
+        frequency : items.frequency,
+        interval : items.interval,
+        notes : items.notes
       }))
     }
     })  
@@ -275,40 +266,35 @@ export class AppComponent implements OnInit{
 }
 
 
-export interface MedicineEvents{
-  id : string,
-  title : string,
-   dosage : string,
-  rrule :{
-    freq : string,
-    interval : number,
-    dtstart : string,
-    until : string
-  },
-  notes : string
+export interface MedicineEvents {
+  id: string,
+  title: string,
+  dosage: string,
+  start: string,
+  frequency : string,
+  interval : number,
+  notes: string
 }
 
 
-export interface postMedicineEvents{
-  id : string,
-  title : string,
-  dosage : string,
-  rrule :{
-    freq : string,
-    interval : number,
-    dtstart : string,
-    until : string
-  },
-  notes : string
+export interface postMedicineEvents {
+  id: string,
+  title: string,
+  dosage: string,
+  start: string,
+  frequency : string,
+  interval : number,
+  notes: string
 }
 
 export interface ShowEvents{
   id : string,
   title : string,
   frequency : string,
+  dosage : string,
   interval : number,
   start : string,
-  until : string
+  notes : string
 }
 
 interface Frequency{
